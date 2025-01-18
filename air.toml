@@ -1,0 +1,30 @@
+# .air.toml
+
+# Set the build directory for Air (optional)
+build_dir = "tmp"
+
+# Go binary to run
+bin = "app"
+
+# Files to watch
+watch_dir = "."
+
+# Ignore specific files
+exclude_dir = [
+  "tmp",
+  "vendor",
+]
+
+# Run the go command to build
+cmd = "go run ."
+
+# How long to wait before restarting the application (in seconds)
+delay = "100ms"
+
+# Watch for changes to these file types
+include_ext = [
+  "go",
+  "tpl",
+  "tmpl",
+  "html",
+]
