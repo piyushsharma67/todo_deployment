@@ -32,7 +32,7 @@ jobs:
     
       - name: SSH into EC2 and pull code from GitHub
         run: |
-            ssh -o StrictHostKeyChecking=no -i /tmp/dev_key.pem ubuntu@${{ secrets.ADDRESS }} << 'EOF'
+            ssh -o StrictHostKeyChecking=no -i /tmp/dev_key.pem ubuntu@${{ secrets.EC2_IP_ADDRESS }} << 'EOF'
             # Change to the app directory or clone the repo if it doesn't exist
             if [ ! -d "/home/ubuntu/app" ]; then
                 git clone git@github.com:${{ secrets.REPOSITORY }} /home/ubuntu/app
