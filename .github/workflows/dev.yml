@@ -24,7 +24,11 @@ jobs:
       - name: Set up SSH key
         run: |
             echo "${{ secrets.EC2_SSH_KEY }}" > /tmp/dev_key.pem
-            chmod 600 /tmp/dev_key.pem # Restrict permissions to the private key
+            chmod 600 /tmp/dev_key.pem # Restrict permissions to the private key\
+
+      - name: Test SSH Connection to EC2
+        run: |
+            ssh -o StrictHostKeyChecking=no -i /tmp/dev_key.pem ubuntu@${{ secrets.EC2_IP_ADDRESS }} "hostname"
     
       - name: Copy files to EC2 using SCP
         run: |
@@ -32,7 +36,7 @@ jobs:
     
       - name: Run Docker Compose on EC2
         run: |
-            ssh -o StrictHostKeyChecking=no -i /tmp/dev_key.pem ubuntu@${{ secrets.ADDRESS }} << 'EOF'
+            ssh -o StrictHostKeyChecking=no -i /tmp/dev_key.pem ubuntu@${{ secrets.EC2_IP_ADDRESS }} << 'EOF'
             cd /home/ubuntu/app
             docker-compose down --remove-orphans
             docker-compose up -d --build
