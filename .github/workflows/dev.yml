@@ -30,14 +30,15 @@ jobs:
         run: |
             ssh -o StrictHostKeyChecking=no -i /tmp/dev_key.pem ubuntu@${{ secrets.EC2_IP_ADDRESS }} "hostname"
     
-      - name: Copy files to EC2 using SCP
+      - name: SSH into EC2 and pull code from GitHub
         run: |
-            scp -o StrictHostKeyChecking=no -i /tmp/dev_key.pem -r ./ ubuntu@${{ secrets.EC2_IP_ADDRESS }}:/home/ubuntu/app
-    
-      - name: Run Docker Compose on EC2
-        run: |
-            ssh -o StrictHostKeyChecking=no -i /tmp/dev_key.pem ubuntu@${{ secrets.EC2_IP_ADDRESS }} << 'EOF'
+            ssh -o StrictHostKeyChecking=no -i /tmp/dev_key.pem ubuntu@${{ secrets.ADDRESS }} << 'EOF'
+            # Change to the app directory or clone the repo if it doesn't exist
+            if [ ! -d "/home/ubuntu/app" ]; then
+                git clone git@github.com:${{ secrets.REPOSITORY }} /home/ubuntu/app
+            fi
             cd /home/ubuntu/app
+            git pull origin main
             docker-compose down --remove-orphans
             docker-compose up -d --build
             EOF
