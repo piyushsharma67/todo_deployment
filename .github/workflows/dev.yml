@@ -30,12 +30,12 @@ jobs:
           # Step 3: Copy files to the EC2 instance using SCP
       - name: Copy files to EC2
         run: |
-            scp -o StrictHostKeyChecking=no -r ./ ec2-user@${{ secrets.ADDRESS }}:/home/ec2-user/app
+            scp -o StrictHostKeyChecking=no -r ./ ubuntu@${{ secrets.ADDRESS }}:/home/ec2-user/app
 
         # Step 4: SSH into EC2 and run Docker Compose
       - name: Run Docker Compose on EC2
         run: |
-            ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.ADDRESS }} << 'EOF'
+            ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.ADDRESS }} << 'EOF'
             cd /home/ec2-user/app
             docker-compose down --remove-orphans
             docker-compose up -d --build
