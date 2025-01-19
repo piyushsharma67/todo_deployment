@@ -21,22 +21,22 @@ jobs:
             echo "MONGO_URL=${{ secrets.MONGO_URL }}" > .env
             chmod 600 .env # Restrict permissions
 
-      - name: Set up SSH key
-        run: |
-            mkdir -p ~/.ssh
-            echo "${{ secrets.DEV_CONNECT }}" > ~/.ssh/id_rsa
-            chmod 600 ~/.ssh/id_rsa
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+         ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+    
     
           # Step 3: Copy files to the EC2 instance using SCP
       - name: Copy files to EC2
         run: |
-            scp -o StrictHostKeyChecking=no -r ./ ubuntu@${{ secrets.ADDRESS }}:/home/ec2-user/app
+            scp -o StrictHostKeyChecking=no -r ./ ubuntu@${{ secrets.ADDRESS }}:/home/ubuntu/app
 
         # Step 4: SSH into EC2 and run Docker Compose
       - name: Run Docker Compose on EC2
         run: |
             ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.ADDRESS }} << 'EOF'
-            cd /home/ec2-user/app
+            cd /home/ubuntu/app
             docker-compose down --remove-orphans
             docker-compose up -d --build
             EOF
